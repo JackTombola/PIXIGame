@@ -37,12 +37,6 @@
         });
 
 
-
-
-
-
-
-
         //Add the canvas that Pixi automatically created for you to the HTML document
         document.body.appendChild(app.view);
 
@@ -55,12 +49,15 @@
             .add("meteor2.png")
             .add("end.png")
             .add("win.png")
+            .add("gas.png")
+            .add("food.png")
+            .add("water.png")
             .load(setup);
 
         //Define variables that might be used in more 
         //than one function
         let state, UFO, Alien, Meteors, chimes, exit, player, dungeon, currentLevel = 0,
-            Portal, healthBar, message, gameScene, gameOverScene, enemies, won, id, Portal2, fuel = 128,
+            Portal, healthBar, message, gameScene, gameOverScene, food, water, enemies, won, gas, gas2, gas3, gas4, id, Portal2, fuel = 128,
             FuelBar, fuelRate = 0.05,
             level2;
 
@@ -98,7 +95,7 @@
             let basicStyle = new PIXI.TextStyle({
                 fill: "white"
             });
-            const basicText = new PIXI.Text('Collect Your Alien Friends without being Killed by the Meteors and Go through the Correct Escape Portal to Win', basicStyle);
+            const basicText = new PIXI.Text('Collect Your Alien Friends without being Killed by the Meteors and Go through the Correct Escape Portal to Go Home', basicStyle);
 
             basicText.x = 350;
             basicText.y = 10;
@@ -192,7 +189,7 @@
 
 
             //Make the Meteors
-            let numberOfMeteors = 1,
+            let numberOfMeteors = 10,
                 spacing = 200,
                 xOffset = 200,
                 speed = 4,
@@ -516,17 +513,21 @@
 
 
 
-
             //If the explorer has brought the Alien to the exit,
             //end the game and display "You won!"
             if (currentLevel === 0 && hitTestRectangle(Alien, Portal) && hitTestRectangle(Alien1, Portal) && hitTestRectangle(Alien2, Portal) && hitTestRectangle(Alien3, Portal) && hitTestRectangle(Alien4, Portal)) {
                 currentLevel = 1;
-                console.log('FUCK')
                 app.stage.removeChild(gameScene)
                 level2 = new Container();
                 app.stage.addChild(level2)
                 background = new Sprite(resources["background.jpg"].texture);
                 level2.addChild(background);
+
+
+                var graphics = new PIXI.Graphics();
+                graphics.lineStyle(2, 0x0000FF, 1);
+                graphics.drawRect(0, 0, 160, window.innerHeight);
+                app.stage.addChild(graphics)
 
                 //Portal
 
@@ -536,14 +537,14 @@
                 });
                 const basicText = new PIXI.Text('Bonus Round', basicStyle);
 
-                basicText.x = 880;
+                basicText.x = 890;
                 basicText.y = 10;
 
 
                 app.stage.addChild(basicText);
 
                 Portal2 = new Sprite(resources["Portal.png"].texture);
-                Portal2.position.set(800, 270);
+                Portal2.position.set(820, 270);
                 level2.addChild(Portal2);
                 Portal2.scale.set(0.8);
 
@@ -580,9 +581,9 @@
                 basicText6.x = 205;
                 basicText6.y = 0;
 
-                const basicText7 = new PIXI.Text("You Don't have Enough Fuel To get Back Home. Collect the Fuel Cans and Go through the Portal ", basicStyle);
+                const basicText7 = new PIXI.Text("You Don't have Enough Supplies To get Back Home. Collect All of the Supplies and Go through the Final Portal ", basicStyle);
                 app.stage.addChild(basicText7);
-                basicText7.x = 420;
+                basicText7.x = 400;
                 basicText7.y = 40;
 
 
@@ -592,24 +593,64 @@
 
                 UFO = new Sprite(resources["UFO.png"].texture);
                 UFO.x = 15;
-                UFO.y = 50 //gameScene.height / 2 - UFO.height / 2;
+                UFO.y = 50
                 UFO.vx = 0;
                 UFO.vy = 0;
                 app.stage.addChild(UFO);
                 UFO.scale.set(0.038);
 
 
-                //Alien
-                Alien = new Sprite(resources["Alien.png"].texture);
-                Alien.x = 70;
-                Alien.y = 400;
-                level2.addChild(Alien);
-                Alien.scale.set(0.3);
+                //Gas
+                gas = new Sprite(resources["gas.png"].texture);
+                gas.x = 700;
+                gas.y = 200;
+                level2.addChild(gas)
+                gas.scale.set(0.02);
+
+
+                gas2 = new Sprite(resources["gas.png"].texture);
+                gas2.x = 700;
+                gas2.y = 700;
+                level2.addChild(gas2)
+                gas2.scale.set(0.02);
+
+
+
+
+                gas3 = new Sprite(resources["gas.png"].texture);
+                gas3.x = 1200;
+                gas3.y = 700;
+                level2.addChild(gas3)
+                gas3.scale.set(0.02);
+
+
+
+
+
+                gas4 = new Sprite(resources["gas.png"].texture);
+                gas4.x = 1200;
+                gas4.y = 200;
+                level2.addChild(gas4)
+                gas4.scale.set(0.02);
+
+
+                food = new Sprite(resources["food.png"].texture);
+                food.x = 1500;
+                food.y = 400;
+                level2.addChild(food)
+                food.scale.set(0.03);
+
+                water = new Sprite(resources["water.png"].texture);
+                water.x = 400;
+                water.y = 400;
+                level2.addChild(water)
+                water.scale.set(0.2);
+
 
 
 
                 //Make the Meteors
-                let numberOfMeteors = 2,
+                let numberOfMeteors = 10,
                     spacing = 200,
                     xOffset = 200,
                     speed = 4,
@@ -678,6 +719,18 @@
                     level2.addChild(meteor);
                 }
 
+
+
+
+
+
+
+
+
+
+
+
+
                 //Create the health bar
                 healthBar = new Container();
                 healthBar.position.set(15, 30)
@@ -728,9 +781,72 @@
                 FuelBar.outer = outerBar1;
             }
 
+            //Check for a collision between the explorer and the Alien
+            if (gas !== undefined && hitTestRectangle(UFO, gas)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                gas.x = UFO.x + 30;
+                gas.y = UFO.y + 10;
+
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (gas2 !== undefined && hitTestRectangle(UFO, gas2)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                gas2.x = UFO.x + 30;
+                gas2.y = UFO.y + 10;
+
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (gas3 !== undefined && hitTestRectangle(UFO, gas3)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                gas3.x = UFO.x + 30;
+                gas3.y = UFO.y + 10;
+
+            }
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (gas4 !== undefined && hitTestRectangle(UFO, gas4)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                gas4.x = UFO.x + 30;
+                gas4.y = UFO.y + 10;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (water !== undefined && hitTestRectangle(UFO, water)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                water.x = UFO.x + 30;
+                water.y = UFO.y + 10;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (food !== undefined && hitTestRectangle(UFO, food)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                food.x = UFO.x + 30;
+                food.y = UFO.y + 10;
+            }
+
+
+
+
+
+
+
+            //Create the `gameOver` scene
+            gameOverScene = new Container();
+            app.stage.addChild(gameOverScene);
+
             //Does the explorer have enough health? If the width of the `innerBar`
             //is less than zero, end the game and display "You lost!"
-            console.log(healthBar.outer.width < 0)
             if (healthBar.outer.width < 0) {
                 state = end;
                 // message.text = "You Lost Try Again!";
@@ -742,7 +858,6 @@
 
 
             }
-
             if (fuel <= 0) {
                 state = end;
                 // message.text = "You Lost Try Again!";
@@ -756,7 +871,7 @@
 
             //HERE
 
-            if (currentLevel === 1 && hitTestRectangle(Alien, Portal2)) {  
+            if (currentLevel === 1 && hitTestRectangle(gas, water, food, Portal2) && hitTestRectangle(gas2, Portal2) && hitTestRectangle(gas3, Portal2) && hitTestRectangle(gas4, Portal2)) {
                 won  =  new  Sprite(resources["win.png"].texture);
                 won.zOrder = 1;
                 gameOverScene.addChild(won);
