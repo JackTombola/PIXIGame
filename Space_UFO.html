@@ -1,0 +1,948 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>UFO Space</title>
+
+<body>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            overflow: hidden
+        }
+    </style>
+    <script src="pixi.min.js"></script>
+    <audio autoplay loop>
+  <source src="https://github.com/parente/spaceship/blob/master/sounds/mp3/music/131207_Orion_sBelt_1st.mp3?raw=true" type="audio/mpeg"> 
+    
+    </audio>
+    <script>
+        //PIXI Link
+        let Application = PIXI.Application,
+            Container = PIXI.Container,
+            loader = PIXI.loader,
+            resources = PIXI.loader.resources,
+            Graphics = PIXI.Graphics,
+            TextureCache = PIXI.utils.TextureCache,
+            Sprite = PIXI.Sprite,
+            Text = PIXI.Text,
+            TextStyle = PIXI.TextStyle;
+
+        //Create a Pixi Application
+        let app = new Application({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            antialiasing: true,
+            transparent: false,
+            resolution: 1
+        });
+
+
+
+
+
+
+
+
+        //Add the canvas that Pixi automatically created for you to the HTML document
+        document.body.appendChild(app.view);
+
+        loader
+            .add("UFO.png")
+            .add("background.jpg")
+            .add("meteor.png")
+            .add("Alien.png")
+            .add("Portal.png")
+            .add("meteor2.png")
+            .add("end.png")
+            .add("win.png")
+            .load(setup);
+
+        //Define variables that might be used in more 
+        //than one function
+        let state, UFO, Alien, Meteors, chimes, exit, player, dungeon, currentLevel = 0,
+            Portal, healthBar, message, gameScene, gameOverScene, enemies, won, id, Portal2, fuel = 128,
+            FuelBar, fuelRate = 0.05,
+            level2;
+
+        //Capture the keyboard arrow keys
+        let left = keyboard(37),
+            up = keyboard(38),
+            right = keyboard(39),
+            down = keyboard(40);
+
+        function setup() {
+
+
+            //Make the game scene and add it to the stage
+            gameScene = new Container();
+            app.stage.addChild(gameScene);
+
+
+
+
+            background = new Sprite(resources["background.jpg"].texture);
+            gameScene.addChild(background);
+
+            var graphics = new PIXI.Graphics();
+            graphics.lineStyle(2, 0x0000FF, 1);
+            graphics.drawRect(0, 0, 160, window.innerHeight);
+            app.stage.addChild(graphics)
+
+
+            //Portal
+            Portal = new Sprite(resources["Portal.png"].texture);
+            Portal.position.set(910, 50);
+            gameScene.addChild(Portal);
+            Portal.scale.set(0.3);
+
+            let basicStyle = new PIXI.TextStyle({
+                fill: "white"
+            });
+            const basicText = new PIXI.Text('Collect Your Alien Friends without being Killed by the Meteors and Go through the Correct Escape Portal to Win', basicStyle);
+
+            basicText.x = 350;
+            basicText.y = 10;
+
+
+            app.stage.addChild(basicText);
+
+            Portal = new Sprite(resources["Portal.png"].texture);
+            Portal.position.set(910, 750);
+            gameScene.addChild(Portal);
+            Portal.scale.set(0.3);
+
+
+
+            const basicText1 = new PIXI.Text('Controls:', basicStyle);
+            app.stage.addChild(basicText1);
+            basicText1.x = 20;
+            basicText1.y = 700;
+
+            const basicText2 = new PIXI.Text('Arrows:', basicStyle);
+            app.stage.addChild(basicText2);
+            basicText2.x = 20;
+            basicText2.y = 750;
+
+            const basicText3 = new PIXI.Text('Left, Right,', basicStyle);
+            app.stage.addChild(basicText3);
+            basicText3.x = 20;
+            basicText3.y = 800;
+
+            const basicText4 = new PIXI.Text('Up, Down', basicStyle);
+            app.stage.addChild(basicText4);
+            basicText4.x = 20;
+            basicText4.y = 850;
+
+            const basicText5 = new PIXI.Text('Health:', basicStyle);
+            app.stage.addChild(basicText5);
+            basicText5.x = 40;
+            basicText5.y = 0;
+
+
+            const basicText6 = new PIXI.Text('Fuel:', basicStyle);
+            app.stage.addChild(basicText6);
+            basicText6.x = 205;
+            basicText6.y = 0;
+
+
+
+
+            //Explorer
+
+            UFO = new Sprite(resources["UFO.png"].texture);
+            UFO.x = 15;
+            UFO.y = 50 //gameScene.height / 2 - UFO.height / 2;
+            UFO.vx = 0;
+            UFO.vy = 0;
+            app.stage.addChild(UFO);
+            UFO.scale.set(0.038);
+
+
+
+            //Alien
+            Alien = new Sprite(resources["Alien.png"].texture);
+            Alien.x = 930;
+            Alien.y = 400;
+            gameScene.addChild(Alien);
+            Alien.scale.set(0.3);
+
+            Alien1 = new Sprite(resources["Alien.png"].texture);
+            Alien1.x = 1600;
+            Alien1.y = 600;
+            gameScene.addChild(Alien1);
+            Alien1.scale.set(0.3);
+
+            Alien2 = new Sprite(resources["Alien.png"].texture);
+            Alien2.x = 1300;
+            Alien2.y = 150;
+            gameScene.addChild(Alien2);
+            Alien2.scale.set(0.3);
+
+            Alien3 = new Sprite(resources["Alien.png"].texture);
+            Alien3.x = 300;
+            Alien3.y = 600;
+            gameScene.addChild(Alien3);
+            Alien3.scale.set(0.3);
+
+            Alien4 = new Sprite(resources["Alien.png"].texture);
+            Alien4.x = 610;
+            Alien4.y = 150;
+            gameScene.addChild(Alien4);
+            Alien4.scale.set(0.3);
+
+
+            //Make the Meteors
+            let numberOfMeteors = 1,
+                spacing = 200,
+                xOffset = 200,
+                speed = 4,
+                ydirection = 1;
+            xdirection = 1;
+
+
+
+            //An array to store all the meteor 
+            Meteors = [];
+
+            //Make as many Meteors as there are `numberOfMeteors
+            for (let i = 0; i < numberOfMeteors; i++) {
+
+                //Make a meteor
+
+                //let meteor = new Sprite(id["meteor.png"]);
+                let meteor;
+                meteorNumb = Math.floor(Math.random() * 3);
+                switch (meteorNumb) {
+                    case 0:
+                        meteor = new Sprite(resources["meteor2.png"].texture);
+                        meteor.scale.set(0.5);
+                        break;
+                    case 1:
+                        meteor = new Sprite(resources["meteor2.png"].texture);
+                        meteor.scale.set(0.2);
+                        break;
+                    case 2:
+                        meteor = new Sprite(resources["meteor2.png"].texture);
+                        meteor.scale.set(0.3);
+                        break;
+                    default:
+                        meteor = new Sprite(resources["meteor2.png"].texture);
+                        break;
+                }
+
+
+                //Space each meteor horizontally according to the `spacing` value.
+                //`xOffset` determines the point from the left of the screen
+                //at which the first meteor should be added
+                let x = spacing * i + xOffset;
+
+                //Give the meteor a random y position
+                let y = randomInt(0, app.stage.height - meteor.height);
+
+                //Set the meteor's position
+                meteor.x = x;
+                meteor.y = y;
+
+                //Set the meteor's vertical velocity. `direction` will be either `1` or
+                //`-1`. `1` means the enemy will move down and `-1` means the meteor will
+                //move up. Multiplying `direction` by `speed` determines the meteor's
+                //vertical direction
+                meteor.vx = speed * xdirection * (Math.random() + 0.5);
+                meteor.vy = speed * ydirection * (Math.random() + 0.5);
+
+                //Reverse the direction for the next meteor
+                xdirection *= -1;
+                ydirection *= -1;
+
+                //Push the meteor into the `Meteors` array
+                Meteors.push(meteor);
+
+                //Add the meteor to the `gameScene`
+                gameScene.addChild(meteor);
+            }
+
+            //Create the health bar
+            healthBar = new Container();
+            healthBar.position.set(15, 30)
+            gameScene.addChild(healthBar);
+
+
+            healthBar.foo = 3456789
+                //Create the black background rectangle
+            let innerBar = new Graphics();
+            innerBar.beginFill(0x000000);
+            innerBar.drawRect(0, 0, 128, 8);
+            innerBar.endFill();
+            healthBar.addChild(innerBar);
+
+            //Create the front red rectangle
+            let outerBar = new Graphics();
+            outerBar.beginFill(0xFF3300);
+            outerBar.drawRect(0, 0, 128, 8);
+            outerBar.endFill();
+            healthBar.addChild(outerBar);
+
+            healthBar.outer = outerBar;
+
+
+            //Create the fuel bar
+            FuelBar = new Container();
+            FuelBar.position.set(170, 30)
+            gameScene.addChild(FuelBar);
+            FuelBar.foo = 3456789
+                //Create the black background rectangle
+            let innerBar1 = new Graphics();
+            innerBar1.beginFill(0x000000);
+            innerBar1.drawRect(0, 0, 128, 8);
+            innerBar1.endFill();
+            FuelBar.addChild(innerBar1);
+
+            //Create the front red rectangle
+            let outerBar1 = new Graphics();
+            outerBar1.beginFill(0xFF3300);
+            outerBar1.drawRect(0, 0, 128, 8);
+            outerBar1.endFill();
+            FuelBar.addChild(outerBar1);
+
+            FuelBar.outer = outerBar1;
+
+            //Create the `gameOver` scene
+            gameOverScene = new Container();
+            app.stage.addChild(gameOverScene);
+
+            //Make the `gameOver` scene invisible when the game first starts
+            gameOverScene.visible = false;
+
+            //Create the text sprite and add it to the `gameOver` scene
+            let style = new TextStyle({
+                fontFamily: "Futura",
+                fontSize: 80,
+                fill: "white"
+            });
+            //message = new Text("The End!", style);
+            //message.x = 550;
+            //message.y = 300;
+            //gameOverScene.addChild(message);
+
+            //Set the game state
+            state = play;
+
+            //Start the game loop 
+            app.ticker.add(delta => gameLoop(delta));
+        }
+
+
+        function gameLoop(delta) {
+
+            //Update the current game state:
+            state(delta);
+        }
+
+
+        function play(delta) {
+
+            UFO.vx = 0;
+            UFO.vy = 0;
+            if (fuel > 0) {
+                if (left.isDown && !right.isDown) {
+                    UFO.vx = -5;
+                }
+                if (right.isDown && !left.isDown) {
+                    UFO.vx = 5;
+                }
+                if (up.isDown && !down.isDown) {
+                    UFO.vy = -5;
+                }
+                if (down.isDown && !up.isDown) {
+                    UFO.vy = 5;
+                }
+            }
+
+            FuelBar.outer.width = fuel;
+
+            if ((up.isDown || right.isDown || down.isDown || left.isDown) && fuel > 0) {
+                fuel -= fuelRate;
+            }
+
+            //use the explorer's velocity to make it move
+            UFO.x += UFO.vx;
+            UFO.y += UFO.vy;
+
+            //Contain the explorer inside the area of the dungeon
+            contain(UFO, {
+                x: 28,
+                y: 10,
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+            //contain(explorer, stage);
+
+            //Set `explorerHit` to `false` before checking for a collision
+            let UFOHit = false;
+
+            //Loop through all the sprites in the `enemies` array
+            Meteors.forEach(function(meteor) {
+
+                //Move the meteor
+                meteor.x += meteor.vx;
+                meteor.y += meteor.vy;
+
+                //Check the meteor's screen boundaries
+                let meteorHitsWall = contain(meteor, {
+                    x: 160,
+                    y: 0,
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                });
+
+                //If the meteor hits the top or bottom of the stage, reverse
+                //its direction
+                if (meteorHitsWall === "top" || meteorHitsWall === "bottom") {
+                    meteor.vy *= -1;
+                }
+                if (meteorHitsWall === "left" || meteorHitsWall === "right") {
+                    meteor.vx *= -1;
+                }
+
+                //Test for a collision. If any of the enemies are touching
+                //the explorer, set `explorerHit` to `true`
+                if (hitTestRectangle(UFO, meteor)) {
+                    UFOHit = true;
+                }
+            });
+
+            //If the explorer is hit...
+            if (UFOHit) {
+
+                //Make the explorer semi-transparent
+                UFO.alpha = 0.5;
+
+                //Reduce the width of the health bar's inner rectangle by 1 pixel
+                healthBar.outer.width -= 1.0;
+
+            } else {
+
+                //Make the explorer fully opaque (non-transparent) if it hasn't been hit
+                UFO.alpha = 1;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (hitTestRectangle(UFO, Alien)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                Alien.x = UFO.x + 30;
+                Alien.y = UFO.y + 10;
+
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (hitTestRectangle(UFO, Alien1)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                Alien1.x = UFO.x + 30;
+                Alien1.y = UFO.y + 10;
+
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (hitTestRectangle(UFO, Alien2)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                Alien2.x = UFO.x + 30;
+                Alien2.y = UFO.y + 10;
+
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (hitTestRectangle(UFO, Alien3)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                Alien3.x = UFO.x + 30;
+                Alien3.y = UFO.y + 10;
+
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (hitTestRectangle(UFO, Alien4)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                Alien4.x = UFO.x + 30;
+                Alien4.y = UFO.y + 10;
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //If the explorer has brought the Alien to the exit,
+            //end the game and display "You won!"
+            if (currentLevel === 0 && hitTestRectangle(Alien, Portal) && hitTestRectangle(Alien1, Portal) && hitTestRectangle(Alien2, Portal) && hitTestRectangle(Alien3, Portal) && hitTestRectangle(Alien4, Portal)) {
+                currentLevel = 1;
+                console.log('FUCK')
+                app.stage.removeChild(gameScene)
+                level2 = new Container();
+                app.stage.addChild(level2)
+                background = new Sprite(resources["background.jpg"].texture);
+                level2.addChild(background);
+
+                //Portal
+
+
+                let basicStyle = new PIXI.TextStyle({
+                    fill: "white"
+                });
+                const basicText = new PIXI.Text('Bonus Round', basicStyle);
+
+                basicText.x = 880;
+                basicText.y = 10;
+
+
+                app.stage.addChild(basicText);
+
+                Portal2 = new Sprite(resources["Portal.png"].texture);
+                Portal2.position.set(800, 270);
+                level2.addChild(Portal2);
+                Portal2.scale.set(0.8);
+
+
+
+                const basicText1 = new PIXI.Text('Controls:', basicStyle);
+                app.stage.addChild(basicText1);
+                basicText1.x = 20;
+                basicText1.y = 700;
+
+                const basicText2 = new PIXI.Text('Arrows:', basicStyle);
+                app.stage.addChild(basicText2);
+                basicText2.x = 20;
+                basicText2.y = 750;
+
+                const basicText3 = new PIXI.Text('Left, Right,', basicStyle);
+                app.stage.addChild(basicText3);
+                basicText3.x = 20;
+                basicText3.y = 800;
+
+                const basicText4 = new PIXI.Text('Up, Down', basicStyle);
+                app.stage.addChild(basicText4);
+                basicText4.x = 20;
+                basicText4.y = 850;
+
+                const basicText5 = new PIXI.Text('Health:', basicStyle);
+                app.stage.addChild(basicText5);
+                basicText5.x = 40;
+                basicText5.y = 0;
+
+
+                const basicText6 = new PIXI.Text('Fuel:', basicStyle);
+                app.stage.addChild(basicText6);
+                basicText6.x = 205;
+                basicText6.y = 0;
+
+                const basicText7 = new PIXI.Text("You Don't have Enough Fuel To get Back Home. Collect the Fuel Cans and Go through the Portal ", basicStyle);
+                app.stage.addChild(basicText7);
+                basicText7.x = 420;
+                basicText7.y = 40;
+
+
+
+
+                //UFO2
+
+                UFO = new Sprite(resources["UFO.png"].texture);
+                UFO.x = 15;
+                UFO.y = 50 //gameScene.height / 2 - UFO.height / 2;
+                UFO.vx = 0;
+                UFO.vy = 0;
+                app.stage.addChild(UFO);
+                UFO.scale.set(0.038);
+
+
+                //Alien
+                Alien = new Sprite(resources["Alien.png"].texture);
+                Alien.x = 70;
+                Alien.y = 400;
+                level2.addChild(Alien);
+                Alien.scale.set(0.3);
+
+
+
+                //Make the Meteors
+                let numberOfMeteors = 2,
+                    spacing = 200,
+                    xOffset = 200,
+                    speed = 4,
+                    ydirection = 1;
+                xdirection = 1;
+
+
+
+                //An array to store all the meteor 
+                Meteors = [];
+
+                //Make as many Meteors as there are `numberOfMeteors
+                for (let i = 0; i < numberOfMeteors; i++) {
+
+                    //Make a meteor
+
+                    //let meteor = new Sprite(id["meteor.png"]);
+                    let meteor;
+                    meteorNumb = Math.floor(Math.random() * 3);
+                    switch (meteorNumb) {
+                        case 0:
+                            meteor = new Sprite(resources["meteor2.png"].texture);
+                            meteor.scale.set(0.5);
+                            break;
+                        case 1:
+                            meteor = new Sprite(resources["meteor2.png"].texture);
+                            meteor.scale.set(0.2);
+                            break;
+                        case 2:
+                            meteor = new Sprite(resources["meteor2.png"].texture);
+                            meteor.scale.set(0.3);
+                            break;
+                        default:
+                            meteor = new Sprite(resources["meteor2.png"].texture);
+                            break;
+                    }
+
+
+                    //Space each meteor horizontally according to the `spacing` value.
+                    //`xOffset` determines the point from the left of the screen
+                    //at which the first meteor should be added
+                    let x = spacing * i + xOffset;
+
+                    //Give the meteor a random y position
+                    let y = randomInt(0, app.stage.height - meteor.height);
+
+                    //Set the meteor's position
+                    meteor.x = x;
+                    meteor.y = y;
+
+                    //Set the meteor's vertical velocity. `direction` will be either `1` or
+                    //`-1`. `1` means the enemy will move down and `-1` means the meteor will
+                    //move up. Multiplying `direction` by `speed` determines the meteor's
+                    //vertical direction
+                    meteor.vx = speed * xdirection * (Math.random() + 0.5);
+                    meteor.vy = speed * ydirection * (Math.random() + 0.5);
+
+                    //Reverse the direction for the next meteor
+                    xdirection *= -1;
+                    ydirection *= -1;
+
+                    //Push the meteor into the `Meteors` array
+                    Meteors.push(meteor);
+
+                    //Add the meteor to the `gameScene`
+                    level2.addChild(meteor);
+                }
+
+                //Create the health bar
+                healthBar = new Container();
+                healthBar.position.set(15, 30)
+                level2.addChild(healthBar);
+
+
+
+
+
+                healthBar.foo = 3456789
+                    //Create the black background rectangle
+                let innerBar = new Graphics();
+                innerBar.beginFill(0x000000);
+                innerBar.drawRect(0, 0, 128, 8);
+                innerBar.endFill();
+                healthBar.addChild(innerBar);
+
+                //Create the front red rectangle
+                let outerBar = new Graphics();
+                outerBar.beginFill(0xFF3300);
+                outerBar.drawRect(0, 0, 128, 8);
+                outerBar.endFill();
+                healthBar.addChild(outerBar);
+
+                healthBar.outer = outerBar;
+
+
+                //Create the fuel bar
+                FuelBar = new Container();
+                FuelBar.position.set(170, 30)
+                level2.addChild(FuelBar);
+                FuelBar.foo = 3456789
+                    //Create the black background rectangle
+                let innerBar1 = new Graphics();
+                innerBar1.beginFill(0x000000);
+                innerBar1.drawRect(0, 0, 128, 8);
+                innerBar1.endFill();
+                FuelBar.addChild(innerBar1);
+
+
+                //Create the front red rectangle
+                let outerBar1 = new Graphics();
+                outerBar1.beginFill(0xFF3300);
+                outerBar1.drawRect(0, 0, 128, 8);
+                outerBar1.endFill();
+                FuelBar.addChild(outerBar1);
+
+                FuelBar.outer = outerBar1;
+            }
+
+            //Does the explorer have enough health? If the width of the `innerBar`
+            //is less than zero, end the game and display "You lost!"
+            console.log(healthBar.outer.width < 0)
+            if (healthBar.outer.width < 0) {
+                state = end;
+                // message.text = "You Lost Try Again!";
+                let ending = new Sprite(resources["end.png"].texture);
+                gameOverScene.addChild(ending);
+                ending.scale.set(0.44);
+
+
+
+
+            }
+
+            if (fuel <= 0) {
+                state = end;
+                // message.text = "You Lost Try Again!";
+                let ending = new Sprite(resources["end.png"].texture);
+                gameOverScene.addChild(ending);
+                ending.scale.set(0.44);
+
+
+            }
+
+
+            //HERE
+
+            if (currentLevel === 1 && hitTestRectangle(Alien, Portal2)) {  
+                won  =  new  Sprite(resources["win.png"].texture);
+                won.zOrder = 1;
+                gameOverScene.addChild(won);
+                won.scale.set(0.95);
+                state = end;
+            }
+        }
+
+        function end() {
+            gameScene.visible = false;
+            if (level2 !== undefined) {
+                level2.visible = false;
+            }
+            gameOverScene.visible = true;
+            state = end;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /* Helper functions */
+
+        function contain(sprite, container) {
+
+            let collision = undefined;
+
+            //Left
+            if (sprite.x < container.x) {
+                sprite.x = container.x;
+                collision = "left";
+            }
+
+            //Top
+            if (sprite.y < container.y) {
+                sprite.y = container.y;
+                collision = "top";
+            }
+
+            //Right
+            if (sprite.x + sprite.width > container.width) {
+                sprite.x = container.width - sprite.width;
+                collision = "right";
+            }
+
+            //Bottom
+            if (sprite.y + sprite.height > container.height) {
+                sprite.y = container.height - sprite.height;
+                collision = "bottom";
+            }
+
+            //Return the `collision` value
+            return collision;
+        }
+
+        //The `hitTestRectangle` function
+        function hitTestRectangle(r1, r2) {
+
+            //Define the variables we'll need to calculate
+            let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+
+            //hit will determine whether there's a collision
+            hit = false;
+
+            //Find the center points of each sprite
+            r1.centerX = r1.x + r1.width / 2;
+            r1.centerY = r1.y + r1.height / 2;
+            r2.centerX = r2.x + r2.width / 2;
+            r2.centerY = r2.y + r2.height / 2;
+
+            //Find the half-widths and half-heights of each sprite
+            r1.halfWidth = r1.width / 2;
+            r1.halfHeight = r1.height / 2;
+            r2.halfWidth = r2.width / 2;
+            r2.halfHeight = r2.height / 2;
+
+            //Calculate the distance vector between the sprites
+            vx = r1.centerX - r2.centerX;
+            vy = r1.centerY - r2.centerY;
+
+            //Figure out the combined half-widths and half-heights
+            combinedHalfWidths = r1.halfWidth + r2.halfWidth;
+            combinedHalfHeights = r1.halfHeight + r2.halfHeight;
+
+            //Check for a collision on the x axis
+            if (Math.abs(vx) < combinedHalfWidths) {
+
+                //A collision might be occuring. Check for a collision on the y axis
+                if (Math.abs(vy) < combinedHalfHeights) {
+
+                    //There's definitely a collision happening
+                    hit = true;
+                } else {
+
+                    //There's no collision on the y axis
+                    hit = false;
+                }
+            } else {
+
+                //There's no collision on the x axis
+                hit = false;
+            }
+
+            //`hit` will be either `true` or `false`
+            return hit;
+        };
+
+
+        //The `randomInt` helper function
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        //The `keyboard` helper function
+        function keyboard(keyCode) {
+            var key = {};
+            key.code = keyCode;
+            key.isDown = false;
+            key.isUp = true;
+            key.press = undefined;
+            key.release = undefined;
+            //The `downHandler`
+            key.downHandler = function(event) {
+                if (event.keyCode === key.code) {
+                    if (key.isUp && key.press) key.press();
+                    key.isDown = true;
+                    key.isUp = false;
+                }
+                event.preventDefault();
+            };
+
+            //The `upHandler`
+            key.upHandler = function(event) {
+                if (event.keyCode === key.code) {
+                    if (key.isDown && key.release) key.release();
+                    key.isDown = false;
+                    key.isUp = true;
+                }
+                event.preventDefault();
+            };
+
+            //Attach event listeners
+            window.addEventListener(
+                "keydown", key.downHandler.bind(key), false
+            );
+            window.addEventListener(
+                "keyup", key.upHandler.bind(key), false
+            );
+            return key;
+        }
+        state = end;
+    </script>
+</body>
