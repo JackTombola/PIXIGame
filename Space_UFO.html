@@ -11,6 +11,7 @@
         }
     </style>
     <script src="pixi.min.js"></script>
+
     <audio autoplay loop>
   <source src="https://github.com/parente/spaceship/blob/master/sounds/mp3/music/131207_Orion_sBelt_1st.mp3?raw=true" type="audio/mpeg"> 
     
@@ -49,17 +50,15 @@
             .add("meteor2.png")
             .add("end.png")
             .add("win.png")
-            .add("gas.png")
-            .add("food.png")
-            .add("water.png")
+            .add("coin.png")
             .load(setup);
 
         //Define variables that might be used in more 
         //than one function
         let state, UFO, Alien, Meteors, chimes, exit, player, dungeon, currentLevel = 0,
-            Portal, healthBar, message, gameScene, gameOverScene, food, water, enemies, won, gas, gas2, gas3, gas4, id, Portal2, fuel = 128,
+            Portal, healthBar, message, gameScene, coin23, coin24, coin25, coin26, gameOverScene, coin, coin1, coin2, coin3, coin4, coin5, coin6, coin7, coin8, coin9, coin10, coin11, coin12, enemies, won, coin13, coin14, coin15, coin16, coin17, coin18, coin19, coin20, coin21, coin22, id, Portal2, fuel = 128,
             FuelBar, fuelRate = 0.05,
-            level2;
+            level2, Portal1, level1;
 
         //Capture the keyboard arrow keys
         let left = keyboard(37),
@@ -97,16 +96,16 @@
             });
             const basicText = new PIXI.Text('Collect Your Alien Friends without being Killed by the Meteors and Go through the Correct Escape Portal to Go Home', basicStyle);
 
-            basicText.x = 350;
+            basicText.x = 320;
             basicText.y = 10;
 
 
             app.stage.addChild(basicText);
 
-            Portal = new Sprite(resources["Portal.png"].texture);
-            Portal.position.set(910, 750);
-            gameScene.addChild(Portal);
-            Portal.scale.set(0.3);
+            Portal1 = new Sprite(resources["Portal.png"].texture);
+            Portal1.position.set(910, 720);
+            gameScene.addChild(Portal1);
+            Portal1.scale.set(0.3);
 
 
 
@@ -189,10 +188,10 @@
 
 
             //Make the Meteors
-            let numberOfMeteors = 10,
+            let numberOfMeteors = 12,
                 spacing = 200,
                 xOffset = 200,
-                speed = 4,
+                speed = 5,
                 ydirection = 1;
             xdirection = 1;
 
@@ -509,12 +508,19 @@
 
 
 
-
+            if (currentLevel === 0 && hitTestRectangle(Alien, Portal1) && hitTestRectangle(Alien1, Portal1) && hitTestRectangle(Alien2, Portal1) && hitTestRectangle(Alien3, Portal1) && hitTestRectangle(Alien4, Portal1)) {
+                currentLevel = 1;
+                state = end;
+                setTimeout(function() {
+                    location.reload()
+                }, 10);
+            }
 
 
 
             //If the explorer has brought the Alien to the exit,
             //end the game and display "You won!"
+
             if (currentLevel === 0 && hitTestRectangle(Alien, Portal) && hitTestRectangle(Alien1, Portal) && hitTestRectangle(Alien2, Portal) && hitTestRectangle(Alien3, Portal) && hitTestRectangle(Alien4, Portal)) {
                 currentLevel = 1;
                 app.stage.removeChild(gameScene)
@@ -522,6 +528,48 @@
                 app.stage.addChild(level2)
                 background = new Sprite(resources["background.jpg"].texture);
                 level2.addChild(background);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 var graphics = new PIXI.Graphics();
@@ -537,16 +585,16 @@
                 });
                 const basicText = new PIXI.Text('Bonus Round', basicStyle);
 
-                basicText.x = 890;
+                basicText.x = 900;
                 basicText.y = 10;
 
 
                 app.stage.addChild(basicText);
 
                 Portal2 = new Sprite(resources["Portal.png"].texture);
-                Portal2.position.set(820, 270);
+                Portal2.position.set(890, 320);
                 level2.addChild(Portal2);
-                Portal2.scale.set(0.8);
+                Portal2.scale.set(0.5);
 
 
 
@@ -581,9 +629,9 @@
                 basicText6.x = 205;
                 basicText6.y = 0;
 
-                const basicText7 = new PIXI.Text("You Don't have Enough Supplies To get Back Home. Collect All of the Supplies and Go through the Final Portal ", basicStyle);
+                const basicText7 = new PIXI.Text("Try and Collect Your Reward without running out of Fuel. Then Go through the Final Portal ", basicStyle);
                 app.stage.addChild(basicText7);
-                basicText7.x = 400;
+                basicText7.x = 480;
                 basicText7.y = 40;
 
 
@@ -597,54 +645,191 @@
                 UFO.vx = 0;
                 UFO.vy = 0;
                 app.stage.addChild(UFO);
-                UFO.scale.set(0.038);
+                UFO.scale.set(0.04);
 
 
-                //Gas
-                gas = new Sprite(resources["gas.png"].texture);
-                gas.x = 700;
-                gas.y = 200;
-                level2.addChild(gas)
-                gas.scale.set(0.02);
+                //coin
+                coin13 = new Sprite(resources["coin.png"].texture);
+                coin13.x = 700;
+                coin13.y = 250;
+                level2.addChild(coin13)
+                coin13.scale.set(0.1);
 
 
-                gas2 = new Sprite(resources["gas.png"].texture);
-                gas2.x = 700;
-                gas2.y = 700;
-                level2.addChild(gas2)
-                gas2.scale.set(0.02);
-
-
-
-
-                gas3 = new Sprite(resources["gas.png"].texture);
-                gas3.x = 1200;
-                gas3.y = 700;
-                level2.addChild(gas3)
-                gas3.scale.set(0.02);
+                coin14 = new Sprite(resources["coin.png"].texture);
+                coin14.x = 700;
+                coin14.y = 550;
+                level2.addChild(coin14)
+                coin14.scale.set(0.1);
 
 
 
 
+                coin15 = new Sprite(resources["coin.png"].texture);
+                coin15.x = 1200;
+                coin15.y = 550;
+                level2.addChild(coin15)
+                coin15.scale.set(0.1);
 
-                gas4 = new Sprite(resources["gas.png"].texture);
-                gas4.x = 1200;
-                gas4.y = 200;
-                level2.addChild(gas4)
-                gas4.scale.set(0.02);
+                coin16 = new Sprite(resources["coin.png"].texture);
+                coin16.x = 1200;
+                coin16.y = 250;
+                level2.addChild(coin16)
+                coin16.scale.set(0.1);
+
+                coin17 = new Sprite(resources["coin.png"].texture);
+                coin17.x = 1200;
+                coin17.y = 100;
+                level2.addChild(coin17)
+                coin17.scale.set(0.1);
 
 
-                food = new Sprite(resources["food.png"].texture);
-                food.x = 1500;
-                food.y = 400;
-                level2.addChild(food)
-                food.scale.set(0.03);
 
-                water = new Sprite(resources["water.png"].texture);
-                water.x = 400;
-                water.y = 400;
-                level2.addChild(water)
-                water.scale.set(0.2);
+                coin18 = new Sprite(resources["coin.png"].texture);
+                coin18.x = 1200;
+                coin18.y = 700;
+                level2.addChild(coin18)
+                coin18.scale.set(0.1);
+
+
+
+                coin19 = new Sprite(resources["coin.png"].texture);
+                coin19.x = 700;
+                coin19.y = 100;
+                level2.addChild(coin19)
+                coin19.scale.set(0.1);
+
+
+                coin20 = new Sprite(resources["coin.png"].texture);
+                coin20.x = 700;
+                coin20.y = 700;
+                level2.addChild(coin20)
+                coin20.scale.set(0.1);
+
+
+                coin21 = new Sprite(resources["coin.png"].texture);
+                coin21.x = 950;
+                coin21.y = 100;
+                level2.addChild(coin21)
+                coin21.scale.set(0.1);
+
+
+                coin22 = new Sprite(resources["coin.png"].texture);
+                coin22.x = 950;
+                coin22.y = 700;
+                level2.addChild(coin22)
+                coin22.scale.set(0.1);
+
+                coin23 = new Sprite(resources["coin.png"].texture);
+                coin23.x = 500;
+                coin23.y = 250;
+                level2.addChild(coin23)
+                coin23.scale.set(0.1);
+
+                coin24 = new Sprite(resources["coin.png"].texture);
+                coin24.x = 500;
+                coin24.y = 550;
+                level2.addChild(coin24)
+                coin24.scale.set(0.1);
+
+
+                coin25 = new Sprite(resources["coin.png"].texture);
+                coin25.x = 1400;
+                coin25.y = 250;
+                level2.addChild(coin25)
+                coin25.scale.set(0.1);
+
+
+                coin26 = new Sprite(resources["coin.png"].texture);
+                coin26.x = 1400;
+                coin26.y = 550;
+                level2.addChild(coin26)
+                coin26.scale.set(0.1);
+
+
+                coin = new Sprite(resources["coin.png"].texture);
+                coin.x = 200;
+                coin.y = 400;
+                level2.addChild(coin)
+                coin.scale.set(0.1);
+
+                coin1 = new Sprite(resources["coin.png"].texture);
+                coin1.x = 300;
+                coin1.y = 400;
+                level2.addChild(coin1)
+                coin1.scale.set(0.1);
+
+                coin2 = new Sprite(resources["coin.png"].texture);
+                coin2.x = 400;
+                coin2.y = 400;
+                level2.addChild(coin2)
+                coin2.scale.set(0.1);
+
+
+
+                coin3 = new Sprite(resources["coin.png"].texture);
+                coin3.x = 500;
+                coin3.y = 400;
+                level2.addChild(coin3)
+                coin3.scale.set(0.1);
+
+
+
+                coin4 = new Sprite(resources["coin.png"].texture);
+                coin4.x = 600;
+                coin4.y = 400;
+                level2.addChild(coin4)
+                coin4.scale.set(0.1);
+
+                coin5 = new Sprite(resources["coin.png"].texture);
+                coin5.x = 700;
+                coin5.y = 400;
+                level2.addChild(coin5)
+                coin5.scale.set(0.1);
+
+                coin6 = new Sprite(resources["coin.png"].texture);
+                coin6.x = 1200;
+                coin6.y = 400;
+                level2.addChild(coin6)
+                coin6.scale.set(0.1);
+
+
+                coin7 = new Sprite(resources["coin.png"].texture);
+                coin7.x = 1300;
+                coin7.y = 400;
+                level2.addChild(coin7)
+                coin7.scale.set(0.1);
+
+
+                coin8 = new Sprite(resources["coin.png"].texture);
+                coin8.x = 1400;
+                coin8.y = 400;
+                level2.addChild(coin8)
+                coin8.scale.set(0.1);
+
+                coin9 = new Sprite(resources["coin.png"].texture);
+                coin9.x = 1500;
+                coin9.y = 400;
+                level2.addChild(coin9)
+                coin9.scale.set(0.1);
+
+                coin10 = new Sprite(resources["coin.png"].texture);
+                coin10.x = 1600;
+                coin10.y = 400;
+                level2.addChild(coin10)
+                coin10.scale.set(0.1);
+
+                coin11 = new Sprite(resources["coin.png"].texture);
+                coin11.x = 1700;
+                coin11.y = 400;
+                level2.addChild(coin11)
+                coin11.scale.set(0.1);
+
+                coin12 = new Sprite(resources["coin.png"].texture);
+                coin12.x = 1800;
+                coin12.y = 400;
+                level2.addChild(coin12)
+                coin12.scale.set(0.1);
 
 
 
@@ -653,7 +838,7 @@
                 let numberOfMeteors = 10,
                     spacing = 200,
                     xOffset = 200,
-                    speed = 4,
+                    speed = 7,
                     ydirection = 1;
                 xdirection = 1;
 
@@ -780,65 +965,261 @@
 
                 FuelBar.outer = outerBar1;
             }
-
             //Check for a collision between the explorer and the Alien
-            if (gas !== undefined && hitTestRectangle(UFO, gas)) {
+            if (coin23 !== undefined && hitTestRectangle(UFO, coin23)) {
 
-                //If the Alien is touching the explorer, center it over the explorer
-                gas.x = UFO.x + 30;
-                gas.y = UFO.y + 10;
-
+                coin23.x = UFO.x + 22;
+                coin23.y = UFO.y + 0.08;
             }
 
 
             //Check for a collision between the explorer and the Alien
-            if (gas2 !== undefined && hitTestRectangle(UFO, gas2)) {
+            if (coin24 !== undefined && hitTestRectangle(UFO, coin24)) {
 
                 //If the Alien is touching the explorer, center it over the explorer
-                gas2.x = UFO.x + 30;
-                gas2.y = UFO.y + 10;
-
-            }
-
-            //Check for a collision between the explorer and the Alien
-            if (gas3 !== undefined && hitTestRectangle(UFO, gas3)) {
-
-                //If the Alien is touching the explorer, center it over the explorer
-                gas3.x = UFO.x + 30;
-                gas3.y = UFO.y + 10;
-
-            }
-
-
-
-            //Check for a collision between the explorer and the Alien
-            if (gas4 !== undefined && hitTestRectangle(UFO, gas4)) {
-
-                //If the Alien is touching the explorer, center it over the explorer
-                gas4.x = UFO.x + 30;
-                gas4.y = UFO.y + 10;
-            }
-
-            //Check for a collision between the explorer and the Alien
-            if (water !== undefined && hitTestRectangle(UFO, water)) {
-
-                //If the Alien is touching the explorer, center it over the explorer
-                water.x = UFO.x + 30;
-                water.y = UFO.y + 10;
-            }
-
-            //Check for a collision between the explorer and the Alien
-            if (food !== undefined && hitTestRectangle(UFO, food)) {
-
-                //If the Alien is touching the explorer, center it over the explorer
-                food.x = UFO.x + 30;
-                food.y = UFO.y + 10;
+                coin24.x = UFO.x + 22;
+                coin24.y = UFO.y + 0.08;
             }
 
 
 
 
 
+            //Check for a collision between the explorer and the Alien
+            if (coin25 !== undefined && hitTestRectangle(UFO, coin25)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin25.x = UFO.x + 22;
+                coin25.y = UFO.y + 0.08;
+            }
+
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin26 !== undefined && hitTestRectangle(UFO, coin26)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin26.x = UFO.x + 22;
+                coin26.y = UFO.y + 0.08;
+            }
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin13 !== undefined && hitTestRectangle(UFO, coin13)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin13.x = UFO.x + 22;
+                coin13.y = UFO.y + 0.08;
+
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin14 !== undefined && hitTestRectangle(UFO, coin14)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin14.x = UFO.x + 22;
+                coin14.y = UFO.y + 0.08;
+
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (coin15 !== undefined && hitTestRectangle(UFO, coin15)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin15.x = UFO.x + 22;
+                coin15.y = UFO.y + 0.08;
+
+            }
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin16 !== undefined && hitTestRectangle(UFO, coin16)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin16.x = UFO.x + 22;
+                coin16.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin17 !== undefined && hitTestRectangle(UFO, coin17)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin17.x = UFO.x + 22;
+                coin17.y = UFO.y + 0.08;
+            }
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin18 !== undefined && hitTestRectangle(UFO, coin18)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin18.x = UFO.x + 22;
+                coin18.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin19 !== undefined && hitTestRectangle(UFO, coin19)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin19.x = UFO.x + 22;
+                coin19.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin20 !== undefined && hitTestRectangle(UFO, coin20)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin20.x = UFO.x + 22;
+                coin20.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin21 !== undefined && hitTestRectangle(UFO, coin21)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin21.x = UFO.x + 22;
+                coin21.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin22 !== undefined && hitTestRectangle(UFO, coin22)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin22.x = UFO.x + 22;
+                coin22.y = UFO.y + 0.08;
+
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin !== undefined && hitTestRectangle(UFO, coin)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin.x = UFO.x + 22;
+                coin.y = UFO.y + 0.08;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (coin1 !== undefined && hitTestRectangle(UFO, coin1)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin1.x = UFO.x + 22;
+                coin1.y = UFO.y + 0.08;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (coin2 !== undefined && hitTestRectangle(UFO, coin2)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin2.x = UFO.x + 22;
+                coin2.y = UFO.y + 0.08;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (coin3 !== undefined && hitTestRectangle(UFO, coin3)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin3.x = UFO.x + 22;
+                coin3.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin4 !== undefined && hitTestRectangle(UFO, coin4)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin4.x = UFO.x + 22;
+                coin4.y = UFO.y + 0.08;
+            }
+
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin5 !== undefined && hitTestRectangle(UFO, coin5)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin5.x = UFO.x + 22;
+                coin5.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin6 !== undefined && hitTestRectangle(UFO, coin6)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin6.x = UFO.x + 22;
+                coin6.y = UFO.y + 0.08;
+            }
+
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin7 !== undefined && hitTestRectangle(UFO, coin7)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin7.x = UFO.x + 22;
+                coin7.y = UFO.y + 0.08;
+            }
+
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin8 !== undefined && hitTestRectangle(UFO, coin8)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin8.x = UFO.x + 22;
+                coin8.y = UFO.y + 0.08;
+            }
+
+
+
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin9 !== undefined && hitTestRectangle(UFO, coin9)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin9.x = UFO.x + 22;
+                coin9.y = UFO.y + 0.08;
+            }
+
+
+            //Check for a collision between the explorer and the Alien
+            if (coin10 !== undefined && hitTestRectangle(UFO, coin10)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin10.x = UFO.x + 22;
+                coin10.y = UFO.y + 0.08;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (coin11 !== undefined && hitTestRectangle(UFO, coin11)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin11.x = UFO.x + 22;
+                coin11.y = UFO.y + 0.08;
+            }
+
+            //Check for a collision between the explorer and the Alien
+            if (coin12 !== undefined && hitTestRectangle(UFO, coin12)) {
+
+                //If the Alien is touching the explorer, center it over the explorer
+                coin12.x = UFO.x + 22;
+                coin12.y = UFO.y + 0.08;
+            }
 
 
             //Create the `gameOver` scene
@@ -853,6 +1234,10 @@
                 let ending = new Sprite(resources["end.png"].texture);
                 gameOverScene.addChild(ending);
                 ending.scale.set(0.44);
+                setTimeout(function() {
+                    location.reload()
+                }, 2000);
+
 
 
 
@@ -864,19 +1249,24 @@
                 let ending = new Sprite(resources["end.png"].texture);
                 gameOverScene.addChild(ending);
                 ending.scale.set(0.44);
-
+                setTimeout(function() {
+                    location.reload()
+                }, 2000);
 
             }
 
 
             //HERE
-
-            if (currentLevel === 1 && hitTestRectangle(gas, water, food, Portal2) && hitTestRectangle(gas2, Portal2) && hitTestRectangle(gas3, Portal2) && hitTestRectangle(gas4, Portal2)) {
+            if (currentLevel === 1 && hitTestRectangle(coin, Portal2) && hitTestRectangle(coin1, Portal2) && hitTestRectangle(coin2, Portal2) && hitTestRectangle(coin3, Portal2) && hitTestRectangle(coin4, Portal2) && hitTestRectangle(coin5, Portal2) && hitTestRectangle(coin6, Portal2) && hitTestRectangle(coin7, Portal2) && hitTestRectangle(coin8, Portal2) && hitTestRectangle(coin9, Portal2) && hitTestRectangle(coin10, Portal2) && hitTestRectangle(coin13, Portal2) && hitTestRectangle(coin14, Portal2) && hitTestRectangle(coin15, Portal2) && hitTestRectangle(coin16, Portal2) && hitTestRectangle(coin17, Portal2) && hitTestRectangle(coin18, Portal2) && hitTestRectangle(coin19, Portal2) && hitTestRectangle(coin20, Portal2) && hitTestRectangle(coin21, Portal2) && hitTestRectangle(coin22, Portal2) && hitTestRectangle(coin23, Portal2) && hitTestRectangle(coin24, Portal2) && hitTestRectangle(coin25, Portal2) && hitTestRectangle(coin26, Portal2)) {
                 won  =  new  Sprite(resources["win.png"].texture);
                 won.zOrder = 1;
                 gameOverScene.addChild(won);
                 won.scale.set(0.95);
                 state = end;
+                setTimeout(function() {
+                    location.reload()
+                }, 5000);
+
             }
         }
 
@@ -888,6 +1278,23 @@
             gameOverScene.visible = true;
             state = end;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
