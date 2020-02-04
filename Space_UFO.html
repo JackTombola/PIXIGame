@@ -13,8 +13,10 @@
     <script src="pixi.min.js"></script>
 
     <audio autoplay loop>
-  <source src="https://github.com/parente/spaceship/blob/master/sounds/mp3/music/131207_Orion_sBelt_1st.mp3?raw=true" type="audio/mpeg"> 
-    
+        <source
+            src="https://github.com/parente/spaceship/blob/master/sounds/mp3/music/131207_Orion_sBelt_1st.mp3?raw=true"
+            type="audio/mpeg">
+
     </audio>
     <script>
         //PIXI Link
@@ -89,18 +91,15 @@
             let basicStyle = new PIXI.TextStyle({
                 fill: "white"
             });
-            const basicText = new PIXI.Text('Collect Your Alien Friends without being Killed by the Meteors and Go through the Correct Escape Portal to Go Home', basicStyle);
+            const basicText = new PIXI.Text(
+                'Collect Your Alien Friends without being Killed by the Meteors and Go through the Correct Escape Portal to Go Home',
+                basicStyle);
 
             basicText.x = 320;
             basicText.y = 10;
-
-
             app.stage.addChild(basicText);
 
-
-
-            //HERE
-
+            //Text
             Portal1 = new Sprite(resources["Portal.png"].texture);
             Portal1.position.set(910, 720);
             gameScene.addChild(Portal1);
@@ -130,7 +129,6 @@
             app.stage.addChild(basicText5);
             basicText5.x = 40;
             basicText5.y = 0;
-
 
             const basicText6 = new PIXI.Text('Fuel:', basicStyle);
             app.stage.addChild(basicText6);
@@ -177,7 +175,6 @@
             gameScene.addChild(Alien4);
             Alien4.scale.set(0.3);
 
-
             //Make the Meteors
             let numberOfMeteors = 12,
                 spacing = 200,
@@ -185,8 +182,6 @@
                 speed = 5,
                 ydirection = 1;
             xdirection = 1;
-
-
 
             //An array to store all the meteor 
             Meteors = [];
@@ -217,7 +212,6 @@
                         break;
                 }
 
-
                 //Space each meteor horizontally according to the `spacing` value.
                 let x = spacing * i + xOffset;
 
@@ -247,10 +241,9 @@
             healthBar = new Container();
             healthBar.position.set(15, 30)
             gameScene.addChild(healthBar);
-
-
             healthBar.foo = 3456789
-                //Create the black background rectangle
+
+            //Create the black background rectangle
             let innerBar = new Graphics();
             innerBar.beginFill(0x000000);
             innerBar.drawRect(0, 0, 128, 8);
@@ -263,7 +256,6 @@
             outerBar.drawRect(0, 0, 128, 8);
             outerBar.endFill();
             healthBar.addChild(outerBar);
-
             healthBar.outer = outerBar;
 
             //Create the fuel bar
@@ -271,7 +263,8 @@
             FuelBar.position.set(170, 30)
             gameScene.addChild(FuelBar);
             FuelBar.foo = 3456789
-                //Create the black background rectangle
+
+            //Create the black background rectangle
             let innerBar1 = new Graphics();
             innerBar1.beginFill(0x000000);
             innerBar1.drawRect(0, 0, 128, 8);
@@ -284,7 +277,6 @@
             outerBar1.drawRect(0, 0, 128, 8);
             outerBar1.endFill();
             FuelBar.addChild(outerBar1);
-
             FuelBar.outer = outerBar1;
 
             //Create the `gameOver` scene
@@ -301,7 +293,6 @@
                 fill: "white"
             });
 
-
             //Set the game state
             state = play;
 
@@ -309,13 +300,10 @@
             app.ticker.add(delta => gameLoop(delta));
         }
 
-
         function gameLoop(delta) {
-
             //Update the current game state:
             state(delta);
         }
-
 
         function play(delta) {
 
@@ -359,7 +347,7 @@
             let UFOHit = false;
 
             //Loop through all the sprites in the `enemies` array
-            Meteors.forEach(function(meteor) {
+            Meteors.forEach(function (meteor) {
 
                 //Move the meteor
                 meteor.x += meteor.vx;
@@ -449,26 +437,13 @@
 
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             //If the user goes through portal1 the game will start again
-            if (currentLevel === 0 && hitTestRectangle(Alien, Portal1) && hitTestRectangle(Alien1, Portal1) && hitTestRectangle(Alien2, Portal1) && hitTestRectangle(Alien3, Portal1) && hitTestRectangle(Alien4, Portal1)) {
+            if (currentLevel === 0 && hitTestRectangle(Alien, Portal1) && hitTestRectangle(Alien1, Portal1) &&
+                hitTestRectangle(Alien2, Portal1) && hitTestRectangle(Alien3, Portal1) && hitTestRectangle(Alien4,
+                    Portal1)) {
                 currentLevel = 1;
                 state = end;
-                setTimeout(function() {
+                setTimeout(function () {
                     location.reload()
                 }, 10);
             }
@@ -476,7 +451,9 @@
 
 
             //If the user goes through portal the game will go to the bonus round
-            if (currentLevel === 0 && hitTestRectangle(Alien, Portal) && hitTestRectangle(Alien1, Portal) && hitTestRectangle(Alien2, Portal) && hitTestRectangle(Alien3, Portal) && hitTestRectangle(Alien4, Portal)) {
+            if (currentLevel === 0 && hitTestRectangle(Alien, Portal) && hitTestRectangle(Alien1, Portal) &&
+                hitTestRectangle(Alien2, Portal) && hitTestRectangle(Alien3, Portal) && hitTestRectangle(Alien4, Portal)
+                ) {
                 currentLevel = 1;
                 app.stage.removeChild(gameScene)
                 level2 = new Container();
@@ -486,20 +463,8 @@
 
 
 
+                ///////////////////////////////////////////////////////Level2 Bonus Round Code////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-                //Level2 Bonus Round Code
                 var graphics = new PIXI.Graphics();
                 graphics.lineStyle(2, 0x0000FF, 1);
                 graphics.drawRect(0, 0, 160, window.innerHeight);
@@ -558,7 +523,9 @@
                 basicText6.x = 205;
                 basicText6.y = 0;
 
-                const basicText7 = new PIXI.Text("Try and Collect Your Reward without running out of Fuel. Then Go through the Final Portal ", basicStyle);
+                const basicText7 = new PIXI.Text(
+                    "Try and Collect Your Reward without running out of Fuel. Then Go through the Final Portal ",
+                    basicStyle);
                 app.stage.addChild(basicText7);
                 basicText7.x = 480;
                 basicText7.y = 40;
@@ -802,7 +769,7 @@
                 level2.addChild(healthBar);
 
                 healthBar.foo = 3456789
-                    //Create the black background rectangle
+                //Create the black background rectangle
                 let innerBar = new Graphics();
                 innerBar.beginFill(0x000000);
                 innerBar.drawRect(0, 0, 128, 8);
@@ -823,7 +790,7 @@
                 FuelBar.position.set(170, 30)
                 level2.addChild(FuelBar);
                 FuelBar.foo = 3456789
-                    //Create the black background rectangle
+                //Create the black background rectangle
                 let innerBar1 = new Graphics();
                 innerBar1.beginFill(0x000000);
                 innerBar1.drawRect(0, 0, 128, 8);
@@ -1065,7 +1032,7 @@
                 let ending = new Sprite(resources["end.png"].texture);
                 gameOverScene.addChild(ending);
                 ending.scale.set(0.44);
-                setTimeout(function() {
+                setTimeout(function () {
                     location.reload()
                 }, 3500);
 
@@ -1073,29 +1040,37 @@
             if (fuel <= 0) {
                 state = end;
                 // message.text = "You Lost Try Again!";
-                setTimeout(function() {
+                setTimeout(function () {
 
                     let ending = new Sprite(resources["end.png"].texture);
                     gameOverScene.addChild(ending);
                     ending.scale.set(0.44);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         location.reload()
                     }, 3500);
                 }, 300);
             }
 
             //HERE
-            if (currentLevel === 1 && hitTestRectangle(coin, Portal2) && hitTestRectangle(coin1, Portal2) && hitTestRectangle(coin2, Portal2) && hitTestRectangle(coin3, Portal2) && hitTestRectangle(coin4, Portal2) && hitTestRectangle(coin5, Portal2) && hitTestRectangle(coin6, Portal2) && hitTestRectangle(coin7, Portal2) && hitTestRectangle(coin8, Portal2) && hitTestRectangle(coin9, Portal2) && hitTestRectangle(coin10, Portal2) && hitTestRectangle(coin13, Portal2) && hitTestRectangle(coin14, Portal2) && hitTestRectangle(coin15, Portal2) && hitTestRectangle(coin16, Portal2) && hitTestRectangle(coin17, Portal2) && hitTestRectangle(coin18, Portal2) && hitTestRectangle(coin19, Portal2) && hitTestRectangle(coin20, Portal2) && hitTestRectangle(coin21, Portal2) && hitTestRectangle(coin22, Portal2) && hitTestRectangle(coin23, Portal2) && hitTestRectangle(coin24, Portal2) && hitTestRectangle(coin25, Portal2) && hitTestRectangle(coin26, Portal2)) {
-                won  =  new  Sprite(resources["win.png"].texture);
+            if (currentLevel === 1 && hitTestRectangle(coin, Portal2) && hitTestRectangle(coin1, Portal2) &&
+                hitTestRectangle(coin2, Portal2) && hitTestRectangle(coin3, Portal2) && hitTestRectangle(coin4,
+                Portal2) && hitTestRectangle(coin5, Portal2) && hitTestRectangle(coin6, Portal2) && hitTestRectangle(
+                    coin7, Portal2) && hitTestRectangle(coin8, Portal2) && hitTestRectangle(coin9, Portal2) &&
+                hitTestRectangle(coin10, Portal2) && hitTestRectangle(coin13, Portal2) && hitTestRectangle(coin14,
+                    Portal2) && hitTestRectangle(coin15, Portal2) && hitTestRectangle(coin16, Portal2) &&
+                hitTestRectangle(coin17, Portal2) && hitTestRectangle(coin18, Portal2) && hitTestRectangle(coin19,
+                    Portal2) && hitTestRectangle(coin20, Portal2) && hitTestRectangle(coin21, Portal2) &&
+                hitTestRectangle(coin22, Portal2) && hitTestRectangle(coin23, Portal2) && hitTestRectangle(coin24,
+                    Portal2) && hitTestRectangle(coin25, Portal2) && hitTestRectangle(coin26, Portal2)) {
+                won = new Sprite(resources["win.png"].texture);
                 won.zOrder = 1;
                 gameOverScene.addChild(won);
                 won.scale.set(0.95);
                 state = end;
-                setTimeout(function() {
+                setTimeout(function () {
                     location.reload()
                 }, 5000);
             }
-
         }
 
         function end() {
@@ -1134,7 +1109,6 @@
             //Return the `collision` value
             return collision;
         }
-
 
         //The `hitTestRectangle` function
         function hitTestRectangle(r1, r2) {
@@ -1204,7 +1178,7 @@
             key.release = undefined;
 
             //The `downHandler`
-            key.downHandler = function(event) {
+            key.downHandler = function (event) {
                 if (event.keyCode === key.code) {
                     if (key.isUp && key.press) key.press();
                     key.isDown = true;
@@ -1214,7 +1188,7 @@
             };
 
             //The `upHandler`
-            key.upHandler = function(event) {
+            key.upHandler = function (event) {
                 if (event.keyCode === key.code) {
                     if (key.isDown && key.release) key.release();
                     key.isDown = false;
